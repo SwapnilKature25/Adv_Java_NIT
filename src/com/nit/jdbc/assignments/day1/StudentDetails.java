@@ -14,10 +14,11 @@ public class StudentDetails {
 					("jdbc:oracle:thin:@localhost:1522:orcl", "swapnil","swap25");
 			PreparedStatement ps1=con.prepareStatement("insert into StudentDetails values(?,?,?,?,?,?,?)");
 			PreparedStatement ps2=con.prepareStatement("select *from StudentDetails");
-			
-				
+			PreparedStatement ps3=con.prepareStatement("select *from StudentDetails where percentage > 60");
 			PreparedStatement ps4=con.prepareStatement("Update StudentDetails set mailId=?, phoneNo=? where rollNo=?");
-			
+			PreparedStatement ps5=con.prepareStatement("select *from StudentDetails where rollNo=?");
+			PreparedStatement ps6=con.prepareStatement("Delete from StudentDetails where percentage > 30 AND percentage < 60");
+			PreparedStatement ps7=con.prepareStatement("Select * from StudentDetails where percentage > 80");
 			
 			while(true)
 			{
@@ -41,26 +42,26 @@ public class StudentDetails {
 										+ " \t 2. Login");
 						
 						System.out.println("Enter your Roll No :");
-						int rollNo=sc.nextInt();
-
+						int rollNo=Integer.parseInt(sc.nextLine());
+						
 						System.out.println("Enter your Name :");
 						String name=sc.nextLine();
-						name=sc.next();
+						
 
 						System.out.println("Enter your Percentage :");
-						float percentage=sc.nextFloat();
+						float percentage=Float.parseFloat(sc.nextLine());
 
 						System.out.println("Enter your First-Name :");
 						String fName=sc.nextLine();
-						fName=sc.next();
+						
 						
 						System.out.println("Enter your Last-Name :");
 						String lName=sc.nextLine();
-						lName=sc.next();
+						
 						
 						System.out.println("Enter your Mail-Id :");
 						String mailId=sc.nextLine();
-						mailId=sc.next();
+						
 
 						System.out.println("Enter your Phone-No :");
 						String pNo=sc.nextLine();
@@ -97,13 +98,73 @@ public class StudentDetails {
 						System.out.println();
 						break;
 					case 3:
+						System.out.println("===========Students got more than 60%=========");
+						ResultSet rs2=ps3.executeQuery();
+						while(rs2.next())
+						{
+							System.out.println(rs2.getInt(1)+"\t"+
+												rs2.getString(2)+"\t"+
+												rs2.getFloat(3)+"\t"+
+												rs2.getString(4)+"\t"+
+												rs2.getString(5)+"\t"+
+												rs2.getString(6)+"\t"+
+												rs2.getString(7));							
+						}
+						System.out.println();
 						break;
 					case 4:
 						System.out.println("=======Updating Student Details========");
-						System.out.println("Enter Student Roll nO=");
+						System.out.println("Enter Student Roll no to modify student details :");
+						int roll=Integer.parseInt(sc.nextLine());
+						ps5.setInt(1, roll);
+						ResultSet rs3=ps5.executeQuery();
 						
-						System.out.println("Existing Student mailId : ");
+						if(rs3.next())
+						{
+							System.out.println("Existing Student mailId : "+rs3.getString(6));
+							System.out.println("Enter new Mail-Id to be Updated : ");
+							String nMailId=sc.nextLine();
+							
+							System.out.println("Existing Student PhoneNo : "+rs3.getString(7));
+							System.out.println("Enter new Phone No to be Updated : ");
+							String newPhno=sc.nextLine();
+							
+							ps4.setString(1, nMailId);
+							ps4.setString(2, newPhno);
+							ps4.setInt(3, roll);
+							
+							int k3=ps4.executeUpdate();
+							if(k3>0)
+							{
+								System.out.println("Student Details Updated Successfully..");
+							}
+							
+						}	
+						System.out.println();										
 						break;
+						
+					case 5:
+						System.out.println("Deleting Student whose percentage is below 60");
+						
+						break;
+						
+					case 6:
+						System.out.println("Below are the Students who got more than 80%");
+						ResultSet rs4=ps7.executeQuery();
+						int count=0;
+						while(rs4.next())
+						{
+							count++;
+						}
+						System.out.println(count+" students scored more than 80%");
+						break;
+						
+					case 7:
+						System.out.println("Exiting...");
+						con.close();
+						System.exit(0);
+						break;
+						
 					default:
 						System.out.println("Invalid choice...");
 				}
