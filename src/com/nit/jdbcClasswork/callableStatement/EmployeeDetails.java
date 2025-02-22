@@ -17,6 +17,7 @@ public class EmployeeDetails {
 			CallableStatement cs=con.prepareCall
 					("{call InsertEmployee (?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 		
+			System.out.println("=-=-=-=-=-=- Inserting Employee Details =-=-=-=-=-=-");
 			System.out.println("Enter the Employee-Id : ");
 			String eid=sc.nextLine();
 			System.out.println("Enter the Employee-Name : ");
